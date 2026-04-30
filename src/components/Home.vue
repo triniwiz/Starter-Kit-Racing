@@ -17,6 +17,8 @@ import { SmokeTrails } from './game/js/Particles.js';
 import { DriftMarks } from './game/js/DriftMarks.js';
 import { GameAudio } from './game/js/Audio.js';
 import { LapTimer } from './game/js/LapTimer.js';
+import { Utils } from '@nativescript/core';
+import { AudioContext } from '@nativescript/audio-context';
 
 
 let renderer;
@@ -295,8 +297,6 @@ async function onReady(event) {
   renderer.setEffects([bloomPass]);
 
 
-
-
   window.addEventListener('resize', () => {
     console.log('Resize event:', canvas.clientWidth, canvas.clientHeight);
     // renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
@@ -312,11 +312,20 @@ async function onReady(event) {
 }
 
 
+function onLoaded(event) {
+  if (__ANDROID__) {
+    const activity = Utils.android.getCurrentActivity();
+    const decorView = activity.getWindow().getDecorView();
+    const uiOptions = android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
+    decorView.setSystemUiVisibility(uiOptions);
+  }
+}
+
 </script>
 
 <template>
   <Frame>
-    <Page actionBarHidden="true">
+    <Page actionBarHidden="true" @loaded="onLoaded">
       <GridLayout style="width: 100%; height: 100%;" rows="*" columns="*">
         <Canvas style="width: 100%; height: 100%;" @ready="onReady" />
       </GridLayout>

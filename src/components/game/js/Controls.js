@@ -240,6 +240,8 @@ export class Controls {
     steerZone.addChild(base);
     container.addChild(steerZone);
 
+    container.id = "touch-controls";
+
     this.page.content.addChild(container);
 
     this.initJoystick(steerZone, base, knob);
