@@ -55,33 +55,29 @@ export class GameAudio {
 
     const that = this;
 
-    loader.load(
-      "~/assets/audio/engine.ogg",
-      (buffer) => {
-        this.engineSound.setBuffer(buffer);
-        this.engineSound.setLoop(true);
-        this.engineSound.setVolume(0);
+    loader.load("~/assets/audio/engine.aac", (buffer) => {
+      this.engineSound.setBuffer(buffer);
+      this.engineSound.setLoop(true);
+      this.engineSound.setVolume(1);
 
-        this.engineLayerSound.setBuffer(buffer);
-        this.engineLayerSound.setLoop(true);
-        this.engineLayerSound.setVolume(0);
+      this.engineSound.play();
 
-        this.checkReady();
-      },
-      null,
-      (err) => {
-        console.error("Error loading engine sound:", err);
-      },
-    );
+      this.engineLayerSound.setBuffer(buffer);
+      this.engineLayerSound.setLoop(true);
+      this.engineLayerSound.setVolume(0);
 
-    loader.load("~/assets/audio/skid.ogg", (buffer) => {
+      this.checkReady();
+    });
+
+
+    loader.load("~/assets/audio/skid.aac", (buffer) => {
       this.skidSound.setBuffer(buffer);
       this.skidSound.setLoop(true);
       this.skidSound.setVolume(0);
       this.checkReady();
     });
 
-    loader.load("~/assets/audio/impact.ogg", (buffer) => {
+    loader.load("~/assets/audio/impact.aac", (buffer) => {
       this.impactBuffer = buffer;
 
       for (let i = 0; i < 3; i++) {

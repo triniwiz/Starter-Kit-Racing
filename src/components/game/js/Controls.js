@@ -185,33 +185,39 @@ export class Controls {
       window.addEventListener("keyup", (e) => (this.keys[e.code] = false));
     }
 
-    this.setupTouchUI();
+    this.setupTouchUI(canvas);
   }
 
-  setupTouchUI() {
+  setupTouchUI(canvas) {
     const container = new AbsoluteLayout();
     container.width = "100%";
     container.height = "100%";
-    container.isUserInteractionEnabled = false;
 
-    if (__ANDROID__) {
-      container.on("loaded", () => {
+    container.on("loaded", () => {
+      if (__ANDROID__) {
         container.nativeView.setClipChildren(false);
         container.nativeView.setClipToPadding(false);
-      });
-    }
+      }
+
+      if (__APPLE__) {
+        container.nativeView.clipToBounds = false;
+      }
+    });
 
     const steerZone = new AbsoluteLayout();
     steerZone.width = "100%";
     steerZone.height = "100%";
-    steerZone.isUserInteractionEnabled = true;
 
-    if (__ANDROID__) {
-      steerZone.on("loaded", () => {
+    steerZone.on("loaded", () => {
+      if (__ANDROID__) {
         steerZone.nativeView.setClipChildren(false);
         steerZone.nativeView.setClipToPadding(false);
-      });
-    }
+      }
+
+      if (__APPLE__) {
+        steerZone.nativeView.clipToBounds = false;
+      }
+    });
 
     // Base (hidden initially)
     const base = new StackLayout();
@@ -222,12 +228,16 @@ export class Controls {
     base.borderWidth = 2;
     base.opacity = 0;
 
-    if (__ANDROID__) {
-      base.on("loaded", () => {
+    base.on("loaded", () => {
+      if (__ANDROID__) {
         base.nativeView.setClipChildren(false);
         base.nativeView.setClipToPadding(false);
-      });
-    }
+      }
+
+      if (__APPLE__) {
+        base.nativeView.clipToBounds = false;
+      }
+    });
 
     // Knob
     const knob = new StackLayout();
@@ -242,7 +252,7 @@ export class Controls {
 
     container.id = "touch-controls";
 
-    this.page.content.addChild(container);
+    canvas.parent.addChild(container);
 
     this.initJoystick(steerZone, base, knob);
   }
