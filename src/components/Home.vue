@@ -18,7 +18,6 @@ import { DriftMarks } from './game/js/DriftMarks.js';
 import { GameAudio } from './game/js/Audio.js';
 import { LapTimer } from './game/js/LapTimer.js';
 import { Utils } from '@nativescript/core';
-import { AudioContext } from '@nativescript/audio-context';
 
 
 let renderer;
@@ -327,7 +326,7 @@ function onLoaded(event) {
   <Frame>
     <Page actionBarHidden="true" @loaded="onLoaded">
       <GridLayout style="width: 100%; height: 100%;" rows="*" columns="*">
-        <Canvas style="width: 100%; height: 100%;" @ready="onReady" />
+        <Canvas isUserInteractionEnabled="false" style="width: 100%; height: 100%;" @ready="onReady" />
       </GridLayout>
     </Page>
   </Frame>
