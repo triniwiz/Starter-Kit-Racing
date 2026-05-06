@@ -58,17 +58,15 @@ export class GameAudio {
     const ext = __ANDROID__ ? "ogg" : "aac";
 
     loader.load(`~/assets/audio/engine.${ext}`, (buffer) => {
-      this.engineSound.setBuffer(buffer);
-      this.engineSound.setLoop(true);
-      this.engineSound.setVolume(1);
+        this.engineSound.setBuffer(buffer);
+        this.engineSound.setLoop(true);
+        this.engineSound.setVolume(0);
 
-      this.engineSound.play();
+        this.engineLayerSound.setBuffer(buffer);
+        this.engineLayerSound.setLoop(true);
+        this.engineLayerSound.setVolume(0);
 
-      this.engineLayerSound.setBuffer(buffer);
-      this.engineLayerSound.setLoop(true);
-      this.engineLayerSound.setVolume(0);
-
-      this.checkReady();
+        this.checkReady();
     });
 
     loader.load(`~/assets/audio/skid.${ext}`, (buffer) => {
