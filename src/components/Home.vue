@@ -320,13 +320,20 @@ function onLoaded(event) {
   }
 }
 
+function onLayoutChange(event) {
+  const canvas = event.object;
+  if (renderer) {
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  }
+}
+
 </script>
 
 <template>
   <Frame>
     <Page actionBarHidden="true" @loaded="onLoaded">
-      <GridLayout style="width: 100%; height: 100%;" rows="*" columns="*">
-        <Canvas isUserInteractionEnabled="false" style="width: 100%; height: 100%;" @ready="onReady" />
+      <GridLayout style="width: 100%; height: 100%;" rows="*" columns="*" iosOverflowSafeArea="true" @layoutChanged="onLayoutChange">
+        <Canvas isUserInteractionEnabled="false" style="width: 100%; height: 100%;" @ready="onReady"  />
       </GridLayout>
     </Page>
   </Frame>
