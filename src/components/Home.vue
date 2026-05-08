@@ -17,7 +17,7 @@ import { SmokeTrails } from './game/js/Particles.js';
 import { DriftMarks } from './game/js/DriftMarks.js';
 import { GameAudio } from './game/js/Audio.js';
 import { LapTimer } from './game/js/LapTimer.js';
-import { Utils } from '@nativescript/core';
+import { Application, Device, Utils } from '@nativescript/core';
 
 
 let renderer;
@@ -98,6 +98,11 @@ scene.add(dirLight);
 const hemiLight = new THREE.HemisphereLight(0xc8d8e8, 0x7a8a5a, 2);
 hemiLight.position.copy(dirLight.position)
 scene.add(hemiLight);
+
+let cam;
+
+const initialState = { width: 0, height: 0, orientation: 'portrait' };
+let currentOrientation = 'portrait';
 
 async function init(canvas) {
 
@@ -205,7 +210,7 @@ async function init(canvas) {
 
   dirLight.target = vehicleGroup;
 
-  const cam = new Camera(canvas);
+  cam = new Camera(canvas);
   scene.add(cam.debug);
 
   const controls = new Controls(canvas);
@@ -280,6 +285,11 @@ async function onReady(event) {
   const canvas = event.object;
   canvas.width = canvas.clientWidth * window.devicePixelRatio;
   canvas.height = canvas.clientHeight * window.devicePixelRatio;
+
+  initialState.width = canvas.clientWidth;
+  initialState.height = canvas.clientHeight;
+
+
   renderer = new THREE.WebGLRenderer({ canvas, antialias: false, outputBufferType: THREE.HalfFloatType });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -294,12 +304,6 @@ async function onReady(event) {
   bloomPass.threshold = 0.5;
 
   renderer.setEffects([bloomPass]);
-
-
-  window.addEventListener('resize', () => {
-    console.log('Resize event:', canvas.clientWidth, canvas.clientHeight);
-    // renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-  });
 
 
   try {
@@ -321,19 +325,29 @@ function onLoaded(event) {
 }
 
 function onLayoutChange(event) {
-  const canvas = event.object;
   if (renderer) {
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+    // ensures that we get the updated layout measurements after the change before resizing the renderer
+    requestAnimationFrame(() => {
+      const width = event.object.clientWidth;
+      const height = event.object.clientHeight;
+
+      if (cam) {
+        cam.camera.aspect = width / height;
+        cam.camera.updateProjectionMatrix();
+      }
+    })
   }
 }
+
 
 </script>
 
 <template>
   <Frame>
-    <Page actionBarHidden="true" @loaded="onLoaded">
-      <GridLayout style="width: 100%; height: 100%;" rows="*" columns="*" iosOverflowSafeArea="true" @layoutChanged="onLayoutChange">
-        <Canvas isUserInteractionEnabled="false" style="width: 100%; height: 100%;" @ready="onReady"  />
+    <Page androidOverflowEdge="top,bottom" actionBarHidden="true" @loaded="onLoaded">
+      <GridLayout style="width: 100%; height: 100%;" rows="*" columns="*" iosOverflowSafeArea="true">
+        <Canvas isUserInteractionEnabled="false" style="width: 100%; height: 100%;" @ready="onReady"
+          @layoutChanged="onLayoutChange" />
       </GridLayout>
     </Page>
   </Frame>
